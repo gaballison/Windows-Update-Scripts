@@ -9,7 +9,7 @@ TrustedInstsaller = Windows Modules Installer
 msiserver = Windows Installer
 #>
 
-# ! Remember to Set-ExecutionPolicy ExecutionPolicy RemoteSigned to allow local scripts to run
+# ! Remember to Set-ExecutionPolicy -ExecutionPolicy RemoteSigned to allow local scripts to run
 
 # Service Names
 $AfServiceNames = 'BITS', 'wuauserv', 'CryptSvc', 'DoSvc', 'UsoSvc', 'TrustedInstaller', 'msiserver'
@@ -33,9 +33,7 @@ try {
             # Write-Host "---- SoftwareDistribution directory renamed successfully `n` "
         }
 
-    } else {
-        # Write-Host "---- The SoftwareDistribution directory does not exist `n` "
-    }
+    } 
 
 
     # Then we start the services again
@@ -69,4 +67,7 @@ finally {
     foreach ($Service3 in $AfServiceNames) {
         Get-Service -Name $Service3 | Select-Object -Property DisplayName, StartType, Status
     }
+
+    # TO DO: write-host list of services that aren't running
+    # is there a way to forcibly start them??
 }
