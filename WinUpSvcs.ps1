@@ -15,13 +15,14 @@ msiserver = Windows Installer
 $AfServiceNames = 'BITS', 'wuauserv', 'CryptSvc', 'DoSvc', 'UsoSvc', 'TrustedInstaller', 'msiserver'
 
 try {
-    # First we stop the services 
+
+    # Step 01: stop the services 
     foreach ($Service in $AfServiceNames)
     {
         Stop-Service -Name $Service -Force
     }
 
-    # Then we rename the SoftwareDistribution folder to force Windows Updates to download new stuff
+    # Step 02: rename the SoftwareDistribution folder to force Windows Updates to download new stuff
     # ONLY IF folder already exists
     if (Test-Path -Path "C:\Windows\SoftwareDistribution" -PathType Container) {
         if (Test-Path -Path "C:\Windows\SoftwareDistribution.old" -PathType Container) {
@@ -33,8 +34,7 @@ try {
     } 
 
 
-    # Then we start the services again
-
+    # Step 03: start the services again
     foreach ($Service2 in $AfServiceNames) {
 
         # check if the startup type is Disabled
@@ -56,22 +56,35 @@ catch {
     Write-Host $_
 }
 finally {
-    # Restart services if they are stopped?
+
+    # Step 04: Restart services if they are stopped?
     foreach ($Service3 in $AfServiceNames) {
         # TO DO: write-host list of services that aren't running
         # is there a way to forcibly start them??
 
        if ((Get-Service -Name $Service3 -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
-            Restart-Service -Name $Service3
+            Start-Service -Name $Service3
        }
 
         # Get-Service -Name $Service3 | Select-Object -Property DisplayName, StartType, Status
-
+        
+        # TEST: manually writing each service status
+        Write-Host $Service3 "is" (Get-Service -Name $Service3).Status
 
     }
 
-    # Launch the Settings app on the Windows Update page so we can try installing updates again
-    Start-Process ms-settings:windowsupdate
+    # Step 05: Launch the Services window depending on input
+    $AfOpenSvc = Read-Host -Prompt "Do you want to open the Services window?  [Y] Yes    [N] No   "
+    if($AfOpenSvc.ToUpper() = "Y") {
+        Start-Process services.msc -Verb RunAs
+    }
+    
+
+    # Step 06: Launch the Settings app on the Windows Update page so we can try installing updates again
+    $AfOpenSet = Read-Host -Prompt "Do you want to open Windows Updates?  [Y] Yes   [N] No    "
+    if($AfOpenSet.ToUpper() = "Y") {
+        Start-Process ms-settings:windowsupdate
+    }
 
 
 }
