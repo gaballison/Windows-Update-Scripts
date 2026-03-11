@@ -27,15 +27,20 @@ try {
     # Step 02: rename the SoftwareDistribution folder to force Windows Updates to download new stuff
     # 2a. test if SoftwareDistribution folder exists and is a directory
     if (Test-Path -Path "C:\Windows\SoftwareDistribution" -PathType Container) {
-        # 2b. If 2a is TRUE, test if SoftwareDistribution.old exists and is a directory
+        
+	# 2b. If 2a is TRUE, test if SoftwareDistribution.old exists and is a directory
         if (Test-Path -Path "C:\Windows\SoftwareDistribution.old" -PathType Container) {
-            # 2c. If 2a is TRUE and 2b is TRUE, remove SoftwareDistribution.old and rename SoftwareDistribution
+            
+	    # 2c. If 2a is TRUE and 2b is TRUE, remove SoftwareDistribution.old and rename SoftwareDistribution
             Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force
             Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
-        } else {
-            # 2d. If 2a is TRUE and 2b is FALSE, rename SoftwareDistribution folder to SoftwareDistribution.old
+       
+	 } else {
+            
+	    # 2d. If 2a is TRUE and 2b is FALSE, rename SoftwareDistribution folder to SoftwareDistribution.old
             Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
-        }
+        
+	}
 
     } 
 
@@ -49,8 +54,10 @@ try {
 
             # 3c. if 3b is TRUE, set StartupType to Manual and Status to Running
             Set-Service -Name $Service2 -StartupType Manual -Status Running
-        } else {
-            # 3d. if 3b is FALSE, we just need to set the Status to Running
+        
+	} else {
+            
+	    # 3d. if 3b is FALSE, we just need to set the Status to Running
             Set-Service -Name $Service2 -Status Running
 
         }
@@ -72,11 +79,10 @@ finally {
         # 4b. Check to see if the service's status is Stopped
         # IMPORTANT: Use single quotes for things like status, startup type, etc.
        if ((Get-Service -Name $Service3 -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
-            # 4c. If 4b is TRUE, use Start-Service cmdlet to start the service
+           
+	    # 4c. If 4b is TRUE, use Start-Service cmdlet to start the service
             Start-Service -Name $Service3
        }
-
-        # OLD: Get-Service -Name $Service3 | Select-Object -Property DisplayName, StartType, Status
 
         # 4d. TEST: manually writing each service status
         Write-Host $Service3 "is" (Get-Service -Name $Service3).Status
@@ -92,6 +98,8 @@ finally {
 
         #5c. If 5b is TRUE, launch the Services process with administrator priveleges
         Start-Process services.msc -Verb RunAs
+    } else {
+	# don't do anything
     }
     
 
