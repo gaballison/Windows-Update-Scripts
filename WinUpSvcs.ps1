@@ -32,15 +32,15 @@ try {
         if (Test-Path -Path "C:\Windows\SoftwareDistribution.old" -PathType Container) {
             
 	    # 2c. If 2a is TRUE and 2b is TRUE, remove SoftwareDistribution.old and rename SoftwareDistribution
-            Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force
-            Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
+            Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse
+            Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old"
        
-	 } else {
+	    } else {
             
-	    # 2d. If 2a is TRUE and 2b is FALSE, rename SoftwareDistribution folder to SoftwareDistribution.old
-            Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
+	        # 2d. If 2a is TRUE and 2b is FALSE, rename SoftwareDistribution folder to SoftwareDistribution.old
+            Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old"
         
-	}
+	    }
 
     } 
 
@@ -52,12 +52,12 @@ try {
         # 3b. Check if the startup type is Disabled
         if ((Get-Service -Name $Service2 -ErrorAction SilentlyContinue).StartType -eq 'Disabled') {
 
-            # 3c. if 3b is TRUE, set StartupType to Manual and Status to Running
-            Set-Service -Name $Service2 -StartupType Manual -Status Running
+            # 3c. if 3b is TRUE, set StartupType to Automatic and Status to Running
+            Set-Service -Name $Service2 -StartupType Automatic -Status Running
         
-	} else {
+	    } else {
             
-	    # 3d. if 3b is FALSE, we just need to set the Status to Running
+	        # 3d. if 3b is FALSE, we just need to set the Status to Running
             Set-Service -Name $Service2 -Status Running
 
         }
@@ -80,7 +80,7 @@ finally {
         # IMPORTANT: Use single quotes for things like status, startup type, etc.
        if ((Get-Service -Name $Service3 -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
            
-	    # 4c. If 4b is TRUE, use Start-Service cmdlet to start the service
+	        # 4c. If 4b is TRUE, use Start-Service cmdlet to start the service
             Start-Service -Name $Service3
        }
 
@@ -94,12 +94,13 @@ finally {
     $AfOpenSvc = Read-Host -Prompt "`n` Do you want to open the Services window?  [Y] Yes    [N] No"
 
     #5b. Check if input from 5a (when converted to uppercase) is Y
-    if($AfOpenSvc.ToUpper() = "Y") {
+    if($AfOpenSvc.ToUpper() -eq "Y") {
 
         #5c. If 5b is TRUE, launch the Services process with administrator priveleges
         Start-Process services.msc -Verb RunAs
+    
     } else {
-	# don't do anything
+	    # don't do anything
     }
     
 
@@ -108,7 +109,7 @@ finally {
     $AfOpenSet = Read-Host -Prompt "`n` Do you want to open Windows Updates?  [Y] Yes   [N] No"
 
     # 6b. Check if input from 6a (when converted to uppercase) is Y
-    if($AfOpenSet.ToUpper() = "Y") {
+    if($AfOpenSet.ToUpper() -eq "Y") {
 
         # 6c. If 6b is TRUE, launch the Settings app on the Windows Updtae screen
         Start-Process ms-settings:windowsupdate
