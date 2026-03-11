@@ -29,8 +29,9 @@ try {
     if (Test-Path -Path "C:\Windows\SoftwareDistribution" -PathType Container) {
         # 2b. If 2a is TRUE, test if SoftwareDistribution.old exists and is a directory
         if (Test-Path -Path "C:\Windows\SoftwareDistribution.old" -PathType Container) {
-            # 2c. If 2a is TRUE and 2b is TRUE, remove SoftwareDistribution.old
+            # 2c. If 2a is TRUE and 2b is TRUE, remove SoftwareDistribution.old and rename SoftwareDistribution
             Remove-Item -Path "C:\Windows\SoftwareDistribution.old" -Recurse -Force
+            Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
         } else {
             # 2d. If 2a is TRUE and 2b is FALSE, rename SoftwareDistribution folder to SoftwareDistribution.old
             Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName "SoftwareDistribution.old" -Force
@@ -47,10 +48,10 @@ try {
         if ((Get-Service -Name $Service2 -ErrorAction SilentlyContinue).StartType -eq 'Disabled') {
 
             # 3c. if 3b is TRUE, set StartupType to Manual and Status to Running
-            Set-Service -Name $Service2 -StartupType Manual -Status Running -PassThru
+            Set-Service -Name $Service2 -StartupType Manual -Status Running
         } else {
             # 3d. if 3b is FALSE, we just need to set the Status to Running
-            Set-Service -Name $Service2 -Status Running -PassThru
+            Set-Service -Name $Service2 -Status Running
 
         }
 
